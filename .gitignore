@@ -1,0 +1,13 @@
+
+.env
+
+target/
+build/
+*.log
+
+
+.idea/
+*.iml
+.vscode/
+.settings/
+.metadata/
