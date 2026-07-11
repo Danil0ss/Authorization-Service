@@ -20,3 +20,11 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/changelog.xml
     enabled: true
+
+#jwt:
+#  secret: "mySuperSecureSecretKeyThatMustBeVeryLong12345678"
+#  expiration: 86400000
+
+jwt:
+  secret: ${jwt.secret}
+  expiration: ${jwt.expiration}
