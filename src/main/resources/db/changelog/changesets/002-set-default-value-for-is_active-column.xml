@@ -1,10 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
-
-    <include file="db/changelog/changesets/001-create-users-and-roles-tables.xml"/>
-    <include file="db/changelog/changesets/002-set-default-value-for-is_active-column.xml"/>
+    
+    <changeSet id="set-default-value" author="Danil0ss">
+        <addDefaultValue tableName="users" columnName="is_active" defaultValueBoolean="true"/>
+    </changeSet>
+    
 </databaseChangeLog>
