@@ -1,12 +1,17 @@
 package com.example.authService.Service;
 
+import com.example.authService.Dto.JwtResponse;
 import com.example.authService.Dto.LoginDto;
 import com.example.authService.Dto.RegisterDto;
+import com.example.authService.Dto.TokenRefreshRequest;
+import com.example.authService.Entity.RefreshToken;
 import com.example.authService.Entity.Role;
 import com.example.authService.Entity.User;
 import com.example.authService.Exception.EmailAlreadyExistsException;
+import com.example.authService.Exception.TokenRefreshException;
 import com.example.authService.Exception.UserNotFoundException;
 import com.example.authService.Mapper.UserMapper;
+import com.example.authService.Repository.RefreshTokenRepository;
 import com.example.authService.Repository.UserRepository;
 import com.example.authService.Security.JwtCore;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,8 @@ public class AuthService {
     private final UserMapper mapper;
     private final AuthenticationManager authenticationManager;
     private final JwtCore jwtCore;
+    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void register(RegisterDto registerDto){
@@ -55,13 +62,31 @@ public class AuthService {
     }
 
     @Transactional
-    public String login(LoginDto loginDto){
+    public JwtResponse login(LoginDto loginDto){
 
         Authentication authentication=authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.email(),loginDto.password())
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtCore.generateToken(userDetails);
+        String accessToken=jwtCore.generateToken(userDetails);
+
+        User user=(User) userDetails;
+        RefreshToken refreshToken=refreshTokenService.createRefreshToken(user.getId());
+
+        return new JwtResponse(accessToken,refreshToken.getToken());
+    }
+
+    @Transactional()
+    public JwtResponse refreshToken(TokenRefreshRequest refreshRequest){
+        RefreshToken refreshToken=refreshTokenRepository.findByToken(refreshRequest.refreshToken())
+                .orElseThrow(()->new TokenRefreshException("Токен не найден"));
+
+        RefreshToken checkedToken=refreshTokenService.verifyExpiration(refreshToken);
+
+        User user=refreshToken.getUser();
+        String newAccessToken= jwtCore.generateToken(user);
+
+        return new JwtResponse(newAccessToken,refreshToken.getToken());
     }
 }
