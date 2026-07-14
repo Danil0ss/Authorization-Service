@@ -25,3 +25,4 @@ spring:
 jwt:
   secret: ${jwt.secret}
   expiration: ${jwt.expiration}
+  refresh-expiration: ${jwt.refresh-expiration}
