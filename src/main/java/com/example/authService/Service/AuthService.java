@@ -4,6 +4,8 @@ import com.example.authService.Dto.LoginDto;
 import com.example.authService.Dto.RegisterDto;
 import com.example.authService.Entity.Role;
 import com.example.authService.Entity.User;
+import com.example.authService.Exception.EmailAlreadyExistsException;
+import com.example.authService.Exception.UserNotFoundException;
 import com.example.authService.Mapper.UserMapper;
 import com.example.authService.Repository.UserRepository;
 import com.example.authService.Security.JwtCore;
@@ -34,7 +36,7 @@ public class AuthService {
     public void register(RegisterDto registerDto){
 
         if(userRepository.findUserByEmail(registerDto.email()).isPresent()){
-            throw new IllegalArgumentException("Пользователь с таким email уже существует");
+            throw new EmailAlreadyExistsException("Пользователь с таким email уже существует");
         }
 
         User user=mapper.toUser(registerDto);
@@ -48,7 +50,7 @@ public class AuthService {
     public void addRoleToUser(UUID id,Role newRole){
 
             User userToUpdate=userRepository.findById(id).
-                    orElseThrow(()-> new RuntimeException("Пользователь не найден"));
+                    orElseThrow(()-> new UserNotFoundException("Пользователь не найден"));
             userToUpdate.getRoles().add(newRole);
     }
 
