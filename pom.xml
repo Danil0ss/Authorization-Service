@@ -104,6 +104,10 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -168,18 +172,15 @@
 						</goals>
 						<configuration>
 							<annotationProcessorPaths>
-								<!-- 1. Lombok процессор -->
 								<path>
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok</artifactId>
 								</path>
-								<!-- 2. Процессор MapStruct (генерирует код мапперов) -->
 								<path>
 									<groupId>org.mapstruct</groupId>
 									<artifactId>mapstruct-processor</artifactId>
 									<version>1.6.3</version>
 								</path>
-								<!-- 3. Связующий плагин между Lombok и MapStruct (обязательно!) -->
 								<path>
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok-mapstruct-binding</artifactId>

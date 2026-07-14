@@ -4,6 +4,7 @@ import com.example.authService.Dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -37,5 +38,23 @@ public class GlobalExceptionHandler {
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        StringBuilder errorMessage = new StringBuilder("Ошибка валидации: ");
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errorMessage.append(error.getField())
+                        .append(" - ")
+                        .append(error.getDefaultMessage())
+                        .append("; ")
+        );
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorMessage.toString(),
+                HttpStatus.BAD_REQUEST.value(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
