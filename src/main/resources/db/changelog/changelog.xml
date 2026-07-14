@@ -7,4 +7,5 @@
 
     <include file="db/changelog/changesets/001-create-users-and-roles-tables.xml"/>
     <include file="db/changelog/changesets/002-set-default-value-for-is_active-column.xml"/>
+    <include file="db/changelog/changesets/003-create-refresh-token-table.xml"/>
 </databaseChangeLog>
